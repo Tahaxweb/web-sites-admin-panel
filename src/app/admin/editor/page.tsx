@@ -3,8 +3,23 @@ import Button from "@/components/Button";
 import Form from "@/components/Form";
 import Input from "@/components/Input";
 import React from "react";
+import { edit } from "@/app/actions/editorActions";
+import { PrismaClient } from "@prisma/client";
 
-function page() {
+const prisma = new PrismaClient();
+async function getData() {
+  const data = await prisma.editorElement.findMany({
+    select: {
+      id: true,
+      title: true,
+      description: true,
+    },
+  });
+
+  return data;
+}
+async function page() {
+  const data = await getData();
   return (
     <div>
       <Form action={create}>
@@ -22,6 +37,22 @@ function page() {
           </div>
         </div>
       </Form>
+      <div className="grid mt-12 grid-cols-1 gap-6 mx-6 md:grid-cols-3 lg:grid-cols-5">
+        {data.map((data, id) => (
+          <div className="w-full border rounded-xl p-5 h-40 ">
+            <h3 className="text-xl font-medium">{data.title}</h3>
+            <p>{data.description}</p>
+            <Form action={edit}>
+              <Input name="inputId" value={data.id} type="hidden" />
+              <div className="flex justify-center">
+                <Input type="text" name="newTitle" placeholder="Edit Todo..." />
+
+                <Button type="submit" text="Save" />
+              </div>
+            </Form>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

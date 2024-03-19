@@ -15,3 +15,22 @@ export async function create(formData: FormData) {
 
   revalidatePath("/");
 }
+
+export async function edit(formData: FormData) {
+  // Form verilerinden "newTitle" ve "inputId" adındaki değerleri alıp string olarak alıyoruz
+  const input = formData.get("newTitle") as string;
+  const inputId = formData.get("inputId") as string;
+
+  // Veritabanında "inputId" ile eşleşen "todo"yu bulup, "title" alanını günceller
+  await prisma.editorElement.update({
+    where: {
+      id: inputId,
+    },
+    data: {
+      title: input,
+    },
+  });
+
+  // Veriyi yenilemek veya güncellemek için Next.js'te "/"" yolunu yeniden getirir
+  revalidatePath("/");
+}
