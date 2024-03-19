@@ -34,3 +34,17 @@ export async function edit(formData: FormData) {
   // Veriyi yenilemek veya güncellemek için Next.js'te "/"" yolunu yeniden getirir
   revalidatePath("/");
 }
+export async function deleteElement(formData: FormData) {
+  // Form verilerinden "inputId" adındaki değeri alıp string olarak alıyoruz
+  const inputId = formData.get("inputId") as string;
+
+  // Veritabanında "inputId" ile eşleşen "todo"yu siler
+  await prisma.editorElement.delete({
+    where: {
+      id: inputId,
+    },
+  });
+
+  // Veriyi yenilemek veya güncellemek için Next.js'te "/"" yolunu yeniden getirir
+  revalidatePath("/");
+}

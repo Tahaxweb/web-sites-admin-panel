@@ -1,9 +1,8 @@
-import { create } from "@/app/actions/editorActions";
 import Button from "@/components/Button";
 import Form from "@/components/Form";
 import Input from "@/components/Input";
 import React from "react";
-import { edit } from "@/app/actions/editorActions";
+import { edit, deleteElement, create } from "@/app/actions/editorActions";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -41,6 +40,7 @@ async function page() {
         {data.map((data, id) => (
           <div className="w-full border rounded-xl p-5 h-40 ">
             <h3 className="text-xl font-medium">{data.title}</h3>
+
             <p>{data.description}</p>
             <Form action={edit}>
               <Input name="inputId" value={data.id} type="hidden" />
@@ -50,6 +50,12 @@ async function page() {
                 <Button type="submit" text="Save" />
               </div>
             </Form>
+            <div className="mt-2">
+              <Form action={deleteElement}>
+                <input type="hidden" name="inputId" value={data.id} />
+                <Button text={"delelte"} type="submit" />
+              </Form>
+            </div>
           </div>
         ))}
       </div>
